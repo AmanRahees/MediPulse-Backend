@@ -30,6 +30,7 @@ class Doctors(models.Model):
     experience = models.ManyToManyField(Experiences, blank=True)
     awards = models.ManyToManyField(Awards, blank=True)
     schedules = models.ManyToManyField(Schedules, blank=True)
+    slot_duration = models.CharField(max_length=100, default="10 mins")
     
     def __str__(self):
         return f"{self.account.email} --> {self.name}"
@@ -43,3 +44,6 @@ class Clinic(models.Model):
     name = models.CharField(max_length=200)
     clinic_address = models.CharField(max_length=500)
     clinic_images = models.ManyToManyField(Images)
+
+    def __str__(self):
+        return f"{self.doctor.name} --> {self.name}"

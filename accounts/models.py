@@ -35,10 +35,10 @@ class AccountUserManager(BaseUserManager):
         return user
     
 class Accounts(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=False)
     email = models.EmailField(max_length=100, unique=True)
     role = models.CharField(max_length=20, default='patient')
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)

@@ -35,6 +35,15 @@ class Awards(models.Model):
     def __str__(self):
         return f"{self.award_name} ({self.award_year})"
     
+class EmailVerification(models.Model):
+    email = models.EmailField(unique=True)
+    otp = models.IntegerField()
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+    
 class Notifications(models.Model):
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     message = models.TextField()
