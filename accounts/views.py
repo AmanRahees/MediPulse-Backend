@@ -76,3 +76,47 @@ class TokenRefreshAPI(APIView):
                 return Response({"Error": "Invalid Refresh Token."}, status=HTTP_400_BAD_REQUEST)
         else:
             return Response({"Error": "Refresh token not provided."}, status=HTTP_400_BAD_REQUEST)
+
+class ForgotPasswordAPI(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        try:            
+            email = request.data.get('email')
+            if not email:
+                return Response({'error': 'Email is required'}, status=HTTP_400_BAD_REQUEST)
+            obj = EmailVerification.objects.get(email=email, is_verified=True)
+            otp = sendEmailVerification(request, email)
+            if not otp:
+                return Response({'error': 'Failed to send verification email'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+            obj.otp = otp
+            obj.save()
+            return Response({'message': 'Account verification has been sent to your email'}, status=HTTP_200_OK)
+        except EmailVerification.DoesNotExist:
+            return Response({'error': 'Account with this email does not exist'}, status=HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        try:
+            email = request.data.get('email')
+            otp = request.data.get('otp')
+            obj = EmailVerification.objects.get(email=email, is_verified=True)
+            if obj.otp == otp:
+                return Response({'message': 'verified'}, status=HTTP_200_OK)
+            return Response({'error': 'Invalid OTP!'}, status=HTTP_200_OK)
+        except:
+            return Response({'error': 'Account with this email does not exist'}, status=HTTP_400_BAD_REQUEST)
+        
+class ResetPasswordAPI(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        try:
+            email = request.data.get('email')
+            password = request.data.get('password')
+            confirm_password = request.data.get('confirm_password')
+            if password == confirm_password:
+                account = Accounts.objects.get(email=email)
+                account.set_password(password)
+                account.save()
+                return Response({'message': 'Password Updated!'}, status=HTTP_202_ACCEPTED)
+            return Response({'error': 'Passwords do not Match!'}, status=HTTP_202_ACCEPTED)
+        except Accounts.DoesNotExist:
+            return Response({'error': 'Account with this email does not exist'}, status=HTTP_400_BAD_REQUEST)

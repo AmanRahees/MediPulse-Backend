@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from datetime import datetime, timedelta, date
 from contexts.models import *
 
 # Create your models here.
@@ -47,3 +48,15 @@ class Clinic(models.Model):
 
     def __str__(self):
         return f"{self.doctor.name} --> {self.name}"
+    
+class Slots(models.Model):
+    doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    is_booked = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.end_time:
+            self.end_time = (datetime.combine(date.today(), self.start_time) + timedelta(minutes=self.doctor.slot_duration)).time()
+        super().save(*args, **kwargs)
