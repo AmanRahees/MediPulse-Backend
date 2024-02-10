@@ -19,6 +19,10 @@ class RegisterAPI(APIView):
             refresh = RefreshToken.for_user(user)
             refresh['username'] = user.username
             refresh['role'] = user.role
+            if user.role == "doctor":
+                create_doctor(user.username, user.email)
+            else:
+                create_patient(user.username, user.email)
             return Response({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=HTTP_201_CREATED)
         return Response(status=HTTP_400_BAD_REQUEST)
     
@@ -27,21 +31,24 @@ class VerificationAPI(APIView):
         email = request.data.get('email')
         if not email:
             return Response({'error': 'Email is required'}, status=HTTP_400_BAD_REQUEST)
-        existing_verification = EmailVerification.objects.filter(email=email).first()
-        if existing_verification:
-            if existing_verification.is_verified:
-                return Response({'error': 'Email is already registered'}, status=HTTP_400_BAD_REQUEST)
+        if Accounts.objects.filter(email=email).exists():
+            return Response({'error': 'Email is already Registered'}, status=HTTP_409_CONFLICT)
+        else:
+            existing_verification = EmailVerification.objects.filter(email=email).first()
+            if existing_verification:
+                if existing_verification.is_verified:
+                    return Response({'message': 'Email is already Verified'}, status=HTTP_208_ALREADY_REPORTED)
+                else:
+                    otp = sendEmailVerification(request, email)
+                    if not otp:
+                        return Response({'error': 'Failed to send verification email'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+                    existing_verification.otp = otp
+                    existing_verification.save()
             else:
                 otp = sendEmailVerification(request, email)
                 if not otp:
                     return Response({'error': 'Failed to send verification email'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-                existing_verification.otp = otp
-                existing_verification.save()
-        else:
-            otp = sendEmailVerification(request, email)
-            if not otp:
-                return Response({'error': 'Failed to send verification email'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-            existing_verification = EmailVerification.objects.create(email=email, otp=otp)
+                existing_verification = EmailVerification.objects.create(email=email, otp=otp)
         return Response({'obj': existing_verification.id, 'message': 'Please check your Email to verify your Account'}, status=HTTP_200_OK)
     
     def put(self, request, pk):
@@ -56,7 +63,7 @@ class VerificationAPI(APIView):
                 return Response({'message': 'verified'}, status=HTTP_202_ACCEPTED)
             else:
                 return Response({'error': 'Invalid OTP'}, status=HTTP_400_BAD_REQUEST)
-        except:
+        except EmailVerification.DoesNotExist:
             return Response({'error': 'Email verification object not found'}, status=HTTP_400_BAD_REQUEST)
             
 class LoginAPI(TokenObtainPairView):

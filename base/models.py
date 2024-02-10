@@ -15,6 +15,9 @@ class Patients(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self):
+        return f"#P100{self.id}"
+
     class Meta:
         verbose_name_plural = "PATIENTS"
         ordering = ("-id",)

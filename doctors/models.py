@@ -19,7 +19,7 @@ class Speciality(models.Model):
 class Doctors(models.Model):
     name = models.CharField(max_length=200)
     account = models.ForeignKey(Accounts, on_delete=models.CASCADE)
-    phone = models.BigIntegerField()
+    phone = models.BigIntegerField(null=True, blank=True)
     picture = models.ImageField(upload_to="pictures/")
     gender = models.CharField(default="Male")
     speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True, blank=True)
@@ -34,7 +34,7 @@ class Doctors(models.Model):
     slot_duration = models.CharField(max_length=100, default="10 mins")
     
     def __str__(self):
-        return f"{self.account.email} --> {self.name}"
+        return f"Dr. {self.name}"
     
     class Meta:
         verbose_name_plural = "DOCTORS"
