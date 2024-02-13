@@ -10,5 +10,6 @@ from contexts.models import *
 admin.site.register(Accounts)
 admin.site.register(Patients)
 admin.site.register(Doctors)
+admin.site.register(Speciality)
 admin.site.register(Appointments)
 admin.site.register(Wallet)

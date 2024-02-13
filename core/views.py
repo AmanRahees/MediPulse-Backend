@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from core.serializers.specialities import *
 
 # Create your views here.
 
@@ -22,3 +24,42 @@ class LoginAPI(APIView):
             else:
                 return Response({"Error": "Access Denied!"}, status=HTTP_403_FORBIDDEN)
         return Response({"Error": "Invalid Username or Password!"}, status=HTTP_400_BAD_REQUEST)
+    
+class SpecialityAPI(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, pk=None):
+        if pk:
+            speciality = get_object_or_404(Speciality, pk=pk)
+            serializer = SpecialitySerializer(speciality, many=False)
+            return Response(serializer.data, status=HTTP_200_OK)
+        else:
+            specialities = Speciality.objects.all()
+            serializer = SpecialitySerializer(specialities, many=True)
+            return Response(serializer.data, status=HTTP_200_OK)
+
+    def post(self, request):
+        serializer = SpecialitySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        
+    def put(self, request, pk):
+        data = request.data.copy()
+        speciality = get_object_or_404(Speciality, pk=pk)
+        try:
+            if type(data['speciality_image']) == str:
+                data.pop('speciality_image')
+        except:
+            pass
+        serializer = SpecialitySerializer(instance=speciality, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        speciality = get_object_or_404(Speciality, pk=pk)
+        speciality.delete()
+        return Response(status=HTTP_200_OK)
