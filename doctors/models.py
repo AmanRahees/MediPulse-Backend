@@ -32,6 +32,7 @@ class Doctors(models.Model):
     awards = models.ManyToManyField(Awards, blank=True)
     schedules = models.ManyToManyField(Schedules, blank=True)
     slot_duration = models.CharField(max_length=100, default="10 mins")
+    is_approved = models.BooleanField(default=False)
     
     def __str__(self):
         return f"Dr. {self.name}"
