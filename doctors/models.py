@@ -20,13 +20,16 @@ class Doctors(models.Model):
     name = models.CharField(max_length=200)
     account = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     phone = models.BigIntegerField(null=True, blank=True)
-    picture = models.ImageField(upload_to="pictures/")
+    picture = models.ImageField(upload_to="pictures/", null=True, blank=True)
     gender = models.CharField(default="Male")
     speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True, blank=True)
     consultation_fee = models.IntegerField(default=500)
     services = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     about = models.TextField()
-    location = models.CharField(max_length=500)
+    location = models.CharField(max_length=500, null=True, blank=True)
+    clinic_name = models.CharField(max_length=200, null=True, blank=True)
+    clinic_address = models.CharField(max_length=500, null=True, blank=True)
+    clinic_images = ArrayField(models.ImageField(upload_to="images/"), null=True, blank=True)
     education = models.ManyToManyField(Educations, blank=True)
     experience = models.ManyToManyField(Experiences, blank=True)
     awards = models.ManyToManyField(Awards, blank=True)
@@ -40,15 +43,6 @@ class Doctors(models.Model):
     class Meta:
         verbose_name_plural = "DOCTORS"
         ordering = ("-id",)
-    
-class Clinic(models.Model):
-    doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    clinic_address = models.CharField(max_length=500)
-    clinic_images = models.ManyToManyField(Images)
-
-    def __str__(self):
-        return f"{self.doctor.name} --> {self.name}"
     
 class Slots(models.Model):
     doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE)

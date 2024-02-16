@@ -18,6 +18,7 @@ class RegisterAPI(APIView):
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
             refresh['username'] = user.username
+            refresh['email'] = user.email
             refresh['role'] = user.role
             if user.role == "doctor":
                 create_doctor(user.username, user.email)

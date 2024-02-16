@@ -1,9 +1,6 @@
 from django.db import models
 from accounts.models import Accounts
 
-class Images(models.Model):
-    image = models.ImageField(upload_to="images/")
-
 class Schedules(models.Model):
     day = models.CharField(max_length=50)
     start_time = models.TimeField()
@@ -14,7 +11,6 @@ class Educations(models.Model):
     Institute = models.CharField(max_length=200)
     date_from = models.DateField()
     date_to = models.DateField(null=True, blank=True)
-    present = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.degree} - {self.Institute}"
@@ -24,6 +20,7 @@ class Experiences(models.Model):
     position = models.CharField(max_length=200)
     date_from = models.DateField()
     date_to = models.DateField(null=True, blank=True)
+    present = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.hospital_name} - {self.position} ({self.date_from}, {self.date_to})"
