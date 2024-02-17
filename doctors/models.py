@@ -29,7 +29,7 @@ class Doctors(models.Model):
     location = models.CharField(max_length=500, null=True, blank=True)
     clinic_name = models.CharField(max_length=200, null=True, blank=True)
     clinic_address = models.CharField(max_length=500, null=True, blank=True)
-    clinic_images = ArrayField(models.ImageField(upload_to="images/"), null=True, blank=True)
+    clinic_images = models.ManyToManyField(ClinicImages, blank=True)
     education = models.ManyToManyField(Educations, blank=True)
     experience = models.ManyToManyField(Experiences, blank=True)
     awards = models.ManyToManyField(Awards, blank=True)

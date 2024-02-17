@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from contexts.models import *
 
+class ClinicImgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClinicImages
+        fields = "__all__"
+
 class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules

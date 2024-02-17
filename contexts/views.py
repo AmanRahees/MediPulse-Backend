@@ -35,6 +35,13 @@ class DoctorInfoContext(APIView):
     
     def put(self, request, pk):
         doctor = get_object_or_404(Doctors, pk=pk)
+        services = request.data.getlist('services[]', [])
+        if services:
+            doctor.services.clear()
+            for service in services:
+                doctor.services.append(service)
+            doctor.save()
+        print(request.data)
         serializer = DoctorSerializer(doctor, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
