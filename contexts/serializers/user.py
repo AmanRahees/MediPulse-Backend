@@ -24,23 +24,29 @@ class DoctorSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_speciality(self, instance):
-        speciality = Speciality.objects.get(id=instance.speciality.id)
-        serializer = SpecialitySerializer(speciality, many=False)
-        return serializer.data
+        if instance.speciality:
+            speciality = Speciality.objects.get(id=instance.speciality.id)
+            serializer = SpecialitySerializer(speciality, many=False)
+            return serializer.data
 
     def to_internal_value(self, data):
         if 'picture' in data and isinstance(data['picture'], str):
             data.pop('picture')
         clinic_images = format_nested_data(data, field_prefix="clinic_images")
-        data['clinic_images'] = clinic_images
+        if clinic_images != []:
+            data['clinic_images'] = clinic_images
         schedules = format_nested_data(data, field_prefix="schedules")
-        data['schedules'] = schedules
+        if schedules != []:
+            data['schedules'] = schedules
         educations = format_nested_data(data, field_prefix="education")
-        data['education'] = educations
+        if educations != []:
+            data['education'] = educations
         experience = format_nested_data(data, field_prefix="experience")
-        data['experience'] = experience
+        if experience != []:
+            data['experience'] = experience
         awards = format_nested_data(data, field_prefix="awards")
-        data['awards'] = awards
+        if awards != []:
+            data['awards'] = awards
         return super().to_internal_value(data)
 
     def update(self, instance, validated_data):
@@ -58,10 +64,15 @@ class DoctorSerializer(serializers.ModelSerializer):
         instance.is_approved = validated_data.get('is_approved', instance.is_approved)
 
         if 'clinic_images' in validated_data:
-            instance.clinic_images.all().delete()
+            instance.clinic_images.clear()
             clinic_images_data = self.initial_data['clinic_images']
-            for schedule_data in clinic_images_data:
-                instance.clinic_images.create(**schedule_data)
+            for image_data in clinic_images_data:
+                if 'id' in image_data:
+                    clinic_image_id = image_data.pop('id')
+                    clinic_image = ClinicImages.objects.get(id=clinic_image_id)
+                    instance.clinic_images.add(clinic_image)
+                else:
+                    instance.clinic_images.create(**image_data)
 
         if 'schedules' in validated_data:
             instance.schedules.all().delete()

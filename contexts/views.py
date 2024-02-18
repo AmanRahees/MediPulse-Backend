@@ -21,12 +21,10 @@ class PatientInfoContext(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=HTTP_200_OK)
-        print(serializer.errors)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
     
 class DoctorInfoContext(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
     
     def get(self, request, pk):
         doctor = get_object_or_404(Doctors, account=pk)
@@ -34,17 +32,17 @@ class DoctorInfoContext(APIView):
         return Response(serializer.data, status=HTTP_200_OK)
     
     def put(self, request, pk):
+        data = request.data.copy()
         doctor = get_object_or_404(Doctors, pk=pk)
-        services = request.data.getlist('services[]', [])
-        if services:
-            doctor.services.clear()
-            for service in services:
-                doctor.services.append(service)
-            doctor.save()
-        print(request.data)
-        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        if 'services[]' in data:
+            services = data.getlist('services[]', [])
+            if services:
+                doctor.services.clear()
+                for service in services:
+                    doctor.services.append(service)
+                doctor.save()
+        serializer = DoctorSerializer(doctor, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=HTTP_200_OK)
-        print(serializer.errors)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

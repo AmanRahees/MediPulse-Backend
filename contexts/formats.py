@@ -16,5 +16,14 @@ def format_nested_data(data, field_prefix):
             while len(nested_data) <= index:
                 nested_data.append({})
             if subfield_name:
+                try:
+                    if value.lower() == 'true':
+                        value = True
+                    elif value.lower() == 'false':
+                        value = False
+                    if value == "":
+                        value = None
+                except:
+                    pass
                 nested_data[index][subfield_name] = value
     return nested_data
