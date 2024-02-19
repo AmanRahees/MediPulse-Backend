@@ -55,3 +55,7 @@ class Slots(models.Model):
         if not self.end_time:
             self.end_time = (datetime.combine(date.today(), self.start_time) + timedelta(minutes=self.doctor.slot_duration)).time()
         super().save(*args, **kwargs)
+    
+    class Meta:
+        verbose_name_plural = "SLOTS"
+        ordering = ("-id",)

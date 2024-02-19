@@ -42,6 +42,7 @@ class Accounts(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
+    created_at = models.DateField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

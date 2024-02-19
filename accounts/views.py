@@ -20,10 +20,6 @@ class RegisterAPI(APIView):
             refresh['username'] = user.username
             refresh['email'] = user.email
             refresh['role'] = user.role
-            if user.role == "doctor":
-                create_doctor(user.username, user.email)
-            else:
-                create_patient(user.username, user.email)
             return Response({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=HTTP_201_CREATED)
         return Response(status=HTTP_400_BAD_REQUEST)
     
@@ -125,6 +121,6 @@ class ResetPasswordAPI(APIView):
                 account.set_password(password)
                 account.save()
                 return Response({'message': 'Password Updated!'}, status=HTTP_202_ACCEPTED)
-            return Response({'error': 'Passwords do not Match!'}, status=HTTP_202_ACCEPTED)
+            return Response({'error': 'Passwords do not Match!'}, status=HTTP_400_BAD_REQUEST)
         except Accounts.DoesNotExist:
             return Response({'error': 'Account with this email does not exist'}, status=HTTP_400_BAD_REQUEST)

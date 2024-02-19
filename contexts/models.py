@@ -48,3 +48,4 @@ class Notifications(models.Model):
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     message = models.TextField()
     read = models.BooleanField(default=False)
+    created_at = models.DateField(auto_now_add=True)

@@ -12,6 +12,7 @@ class Appointments(models.Model):
     booked_time = models.DateTimeField(auto_now_add=True)
     reason = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(max_length=100, default="pending")
+    updated_at = models.DateField(auto_now=True)
 
     def __str__(self):
         return f"{self.patient.first_name} -> {self.doctor.name}"
@@ -25,6 +26,7 @@ class BookingPayments(models.Model):
     transaction_id = models.CharField(max_length=100)
     amount = models.IntegerField(default=0)
     status = models.CharField(max_length=100, default="paid")
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.appointment.id} -> {self.transaction_id}"

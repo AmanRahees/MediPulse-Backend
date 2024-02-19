@@ -8,7 +8,7 @@ class Patients(models.Model):
     last_name = models.CharField(max_length=200, null=True, blank=True)
     account = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     phone = models.BigIntegerField(null=True, blank=True)
-    picture = models.ImageField(upload_to="pictures/")
+    picture = models.ImageField(upload_to="pictures/", null=True)
     gender = models.CharField(default="Male")
     DOB = models.DateField(null=True, blank=True)
     blood_group = models.CharField(max_length=50, null=True, blank=True)

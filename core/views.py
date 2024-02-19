@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from core.serializers.specialities import *
+from core.serializers.doctors import *
 
 # Create your views here.
 
@@ -63,3 +64,22 @@ class SpecialityAPI(APIView):
         speciality = get_object_or_404(Speciality, pk=pk)
         speciality.delete()
         return Response(status=HTTP_200_OK)
+    
+class DoctorsAPI(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request, pk=None):
+        if pk:
+            doctor = get_object_or_404(Doctors, pk=pk)
+            serializer = DoctorSerializer(doctor, many=False)
+            return Response(serializer.data, status=HTTP_200_OK)
+        else:
+            doctors = Doctors.objects.all()
+            serializer = DoctorSerializer(doctors, many=True)
+            return Response(serializer.data, status=HTTP_200_OK)
+
+    def post(self, request, pk):
+        doctor = get_object_or_404(Doctors, pk=pk)
+        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        return Response(serializer.data, status=HTTP_200_OK)
+    
+#

@@ -11,6 +11,12 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patients
         fields = "__all__"
 
+    def to_internal_value(self, data):
+        data = data.copy()
+        if 'picture' in data and isinstance(data['picture'], str):
+            data.pop('picture')
+        return super().to_internal_value(data)
+
 class DoctorSerializer(serializers.ModelSerializer):
     clinic_images = ClinicImgSerializer(many=True)
     schedules = SchedulesSerializer(many=True)
