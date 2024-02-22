@@ -79,7 +79,9 @@ class DoctorsAPI(APIView):
 
     def post(self, request, pk):
         doctor = get_object_or_404(Doctors, pk=pk)
-        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        doctor.is_approved = not doctor.is_approved
+        doctor.save()
+        serializer = DoctorSerializer(doctor, many=False)
         return Response(serializer.data, status=HTTP_200_OK)
     
 #

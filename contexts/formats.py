@@ -27,3 +27,7 @@ def format_nested_data(data, field_prefix):
                     pass
                 nested_data[index][subfield_name] = value
     return nested_data
+
+def convert_to_text(arr):
+    value = ", ".join(arr)
+    return value

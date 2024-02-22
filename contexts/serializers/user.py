@@ -61,7 +61,6 @@ class DoctorSerializer(serializers.ModelSerializer):
         instance.phone = validated_data.get('phone', instance.phone)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.consultation_fee = validated_data.get('consultation_fee', instance.consultation_fee)
-        instance.services = validated_data.get('services', instance.services)
         instance.about = validated_data.get('about', instance.about)
         instance.location = validated_data.get('location', instance.location)
         instance.clinic_name = validated_data.get('clinic_name', instance.clinic_name)

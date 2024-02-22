@@ -24,7 +24,7 @@ class Doctors(models.Model):
     gender = models.CharField(default="Male")
     speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True, blank=True)
     consultation_fee = models.IntegerField(default=500)
-    services = ArrayField(models.CharField(max_length=200), blank=True, null=True)
+    services = ArrayField(models.CharField(max_length=200), blank=True, default=list,)
     about = models.TextField()
     location = models.CharField(max_length=500, null=True, blank=True)
     clinic_name = models.CharField(max_length=200, null=True, blank=True)

@@ -1,13 +1,33 @@
 from django.db import models
+from datetime import datetime, timedelta
 from accounts.models import Accounts
 
 class ClinicImages(models.Model):
     clinic_image = models.ImageField(upload_to="clinic_images")
+    
+DAY_CHOICES = [
+    ("MONDAY", "MONDAY"),
+    ("TUESDAY", "TUESDAY"),
+    ("WEDNESDAY", "WEDNESDAY"),
+    ("THURSDAY", "THURSDAY"),
+    ("FRIDAY", "FRIDAY"),
+    ("SATURDAY", "SATURDAY"),
+    ("SUNDAY", "SUNDAY"),
+]
 
 class Schedules(models.Model):
     day = models.CharField(max_length=50)
     start_time = models.TimeField()
-    end_time = models.TimeField()
+    end_time = models.TimeField(null=True, blank=True)
+    total_slots = models.IntegerField(default=5)
+    slot_duration = models.IntegerField(default=10)
+
+    def save(self, *args, **kwargs):
+        start = datetime.strptime(str(self.start_time), '%H:%M:%S')
+        duration = timedelta(minutes=self.slot_duration * self.total_slots)
+        end = start + duration
+        self.end_time = end.time()
+        super().save(*args, **kwargs)
     
 class Educations(models.Model):
     degree = models.CharField(max_length=200)

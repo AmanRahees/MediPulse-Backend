@@ -23,3 +23,8 @@ class AccountLoginSerializers(TokenObtainPairSerializer):
         token['email'] = user.email
         token['role'] = user.role
         return token
+    
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accounts
+        fields = ("id", "username", "email", "role", "is_active", "created_at")
