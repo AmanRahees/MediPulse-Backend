@@ -34,7 +34,7 @@ class Doctors(models.Model):
     experience = models.ManyToManyField(Experiences, blank=True)
     awards = models.ManyToManyField(Awards, blank=True)
     schedules = models.ManyToManyField(Schedules, blank=True)
-    slot_duration = models.CharField(max_length=100, default="10 mins")
+    slot_duration = models.IntegerField(default=10)
     is_approved = models.BooleanField(default=False)
     
     def __str__(self):

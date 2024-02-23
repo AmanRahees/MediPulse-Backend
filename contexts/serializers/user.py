@@ -79,12 +79,6 @@ class DoctorSerializer(serializers.ModelSerializer):
                 else:
                     instance.clinic_images.create(**image_data)
 
-        if 'schedules' in validated_data:
-            instance.schedules.all().delete()
-            schedules_data = self.initial_data['schedules']
-            for schedule_data in schedules_data:
-                instance.schedules.create(**schedule_data)
-
         if 'education' in validated_data:
             instance.education.all().delete()
             education_data = self.initial_data['education']
