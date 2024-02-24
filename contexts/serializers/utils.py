@@ -7,6 +7,8 @@ class ClinicImgSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class SchedulesSerializer(serializers.ModelSerializer):
+    start_time = serializers.TimeField(format='%H:%M')
+    end_time = serializers.TimeField(format='%H:%M', required=False, allow_null=True)
     class Meta:
         model = Schedules
         fields = "__all__"

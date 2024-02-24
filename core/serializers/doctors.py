@@ -13,6 +13,7 @@ class DoctorSerializer(serializers.ModelSerializer):
     education = EducationsSerializer(many=True)
     experience = ExperiencesSerializer(many=True)
     awards = AwardsSerializer(many=True)
+    schedules = SchedulesSerializer(many=True)
 
     class Meta:
         model =  Doctors
