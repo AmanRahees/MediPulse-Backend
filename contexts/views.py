@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.status import *
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from doctors.permissions import isDoctor
 from rest_framework.views import APIView
 from rest_framework import generics
 from contexts.serializers.user import *
@@ -25,7 +26,7 @@ class PatientInfoContext(APIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
     
 class DoctorInfoContext(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [isDoctor]
     
     def get(self, request, pk):
         doctor = get_object_or_404(Doctors, account=pk)

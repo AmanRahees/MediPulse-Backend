@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Accounts
+from doctors.models import Doctors
 
 # Create your models here.
 
@@ -39,3 +40,13 @@ class Wallet(models.Model):
 
     class Meta:
         verbose_name_plural = "WALLET"
+
+class Reviews(models.Model):
+    patient = models.ForeignKey(Patients, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE)
+    rating = models.DecimalField(default=5, max_digits=3, decimal_places=2)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "REVIEWS"

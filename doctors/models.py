@@ -43,19 +43,25 @@ class Doctors(models.Model):
     class Meta:
         verbose_name_plural = "DOCTORS"
         ordering = ("-id",)
-    
-class Slots(models.Model):
+
+class SlotInstance(models.Model):
     doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE)
     date = models.DateField()
+
+    class Meta:
+        unique_together = ('doctor', 'date')
+    
+class Slots(models.Model):
+    slot_instance = models.ForeignKey(SlotInstance, on_delete=models.CASCADE)
+    date = models.DateField()
     start_time = models.TimeField()
-    end_time = models.TimeField()
+    end_time = models.TimeField(null=True, blank=True)
     is_booked = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.end_time:
-            self.end_time = (datetime.combine(date.today(), self.start_time) + timedelta(minutes=self.doctor.slot_duration)).time()
+        self.end_time = (datetime.combine(date.today(), self.start_time) + timedelta(minutes=self.slot_instance.doctor.slot_duration)).time()
         super().save(*args, **kwargs)
     
     class Meta:
         verbose_name_plural = "SLOTS"
-        ordering = ("-id",)
+        ordering = ("id",)
