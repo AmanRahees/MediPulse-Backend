@@ -7,8 +7,8 @@ from base.models import *
 class Appointments(models.Model):
     patient = models.ForeignKey(Patients, on_delete=models.SET_NULL, null=True, blank=True)
     doctor = models.ForeignKey(Doctors, on_delete=models.SET_NULL, null=True, blank=True)
-    price = models.IntegerField(default=0)
-    appointment_time = models.DateTimeField()
+    amount = models.IntegerField(default=0)
+    appointment_slot = models.ForeignKey(Slots, on_delete=models.SET_NULL, null=True, blank=True)
     booked_time = models.DateTimeField(auto_now_add=True)
     reason = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(max_length=100, default="pending")

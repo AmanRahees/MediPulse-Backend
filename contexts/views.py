@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.permissions import IsAuthenticated
-from doctors.permissions import isDoctor
+from doctors.permissions import isPatient, isDoctor
 from rest_framework.views import APIView
 from rest_framework import generics
 from contexts.serializers.user import *
@@ -11,7 +11,7 @@ from contexts.serializers.wallet import *
 # Create your views here.
     
 class PatientInfoContext(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [isPatient]
     def get(self, request, pk):
         patient = get_object_or_404(Patients, account=pk)
         serializer = PatientSerializer(patient, many=False)

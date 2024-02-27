@@ -52,7 +52,7 @@ class SlotInstance(models.Model):
         unique_together = ('doctor', 'date')
     
 class Slots(models.Model):
-    slot_instance = models.ForeignKey(SlotInstance, on_delete=models.CASCADE)
+    slot_instance = models.ForeignKey(SlotInstance, on_delete=models.CASCADE, null=True)
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField(null=True, blank=True)
