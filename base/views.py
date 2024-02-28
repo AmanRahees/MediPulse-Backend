@@ -2,11 +2,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from doctors.permissions import isPatient
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from core.serializers.doctors import *
 from core.serializers.slots import *
+from base.serializers.appointments import Appointments, AppointmentSerializers
 from doctors.func import get_day_of_week
 
 # Create your views here.
@@ -45,3 +47,12 @@ class ListSlots(generics.ListAPIView):
             return slots
         else:
             return Slots.objects.none()
+        
+class PatientAppointments(generics.ListAPIView):
+    permission_classes = [isPatient]
+    serializer_class = AppointmentSerializers
+    pagination_class = PageNumberPagination
+    
+    def get_queryset(self):
+        return Appointments.objects.filter(patient__account=self.request.user.id)
+
